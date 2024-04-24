@@ -1,0 +1,66 @@
+/* HomeworkList.module.css */
+.container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.title {
+    text-align: center;
+    color: #333;
+}
+
+.subjectsList {
+    list-style: none;
+    padding: 0;
+}
+
+.subjectItem {
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+}
+
+.subjectName {
+    color: #0056b3;
+    margin: 0 0 10px 0;
+}
+
+.assignmentsList {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.assignmentItem {
+    padding: 5px 0;
+}
+
+.addForm {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.inputField, .selectField {
+    padding: 8px;
+    margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.addButton {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.addButton:hover {
+    background-color: #45a049;
+}
