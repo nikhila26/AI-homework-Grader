@@ -6,6 +6,7 @@ function Login() {
     const [user, setUser] = useState(''); // To store the username input
     const [password, setPassword] = useState(''); // To store the password input
     const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+    const [error, setError] = useState(''); // State to manage error messages
     const navigate = useNavigate(); // Hook to navigate to different routes
 
     // Predefined user credentials
@@ -25,7 +26,7 @@ function Login() {
     const handleLogin = () => {
         // Validate if both username and password fields are not empty
         if (!user || !password) {
-            alert('Please enter both username and password.');
+            setError('Please enter both username and password.');
             return; // Stop the function if validation fails
         }
 
@@ -33,9 +34,9 @@ function Login() {
         if (validUsers[user] && validUsers[user] === password) {
             console.log('Logging in with', user, password);
             localStorage.setItem('user', user); // Simulate a successful login and save user to local storage
-            navigate('/homework-list'); // Navigate to another route on successful login
+            navigate('/dashboard'); // Navigate to StudentDashboard on successful login
         } else {
-            alert('Invalid username or password.'); // Alert if credentials are incorrect
+            setError('Invalid username or password.'); // Set error message if credentials are incorrect
         }
     };
 
@@ -46,9 +47,10 @@ function Login() {
     return (
         <div className={styles.container}>
             <div className={styles.formGroup}>
-                <label className={styles.label}>Username:</label>
+                <label htmlFor="username" className={styles.label}>Username:</label>
                 <input
                     type="text"
+                    id="username"
                     className={styles.input}
                     value={user}
                     onChange={e => setUser(e.target.value)}
@@ -56,23 +58,34 @@ function Login() {
                 />
             </div>
             <div className={styles.formGroup}>
-                <label className={styles.label}>Password:</label>
+                <label htmlFor="password" className={styles.label}>Password:</label>
                 <input
                     type={showPassword ? "text" : "password"}
+                    id="password"
                     className={styles.input}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="Enter password"
                 />
-                <button onClick={togglePasswordVisibility} className={styles.toggleButton}>
+                <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className={styles.toggleButton}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                >
                     {showPassword ? '🙈' : '👁️'}
                 </button>
             </div>
+            {error && <div className={styles.error}>{error}</div>}
             <button onClick={handleLogin} className={styles.loginButton}>Login</button>
             <div className={styles.forgotPassword}>
-                <a href="#forgot" onClick={() => alert('Redirect to forgot password page')} className={styles.forgotLink}>
+                <button
+                    type="button"
+                    onClick={() => alert('Redirect to forgot password page')}
+                    className={styles.forgotLink}
+                >
                     Forgot Password?
-                </a>
+                </button>
             </div>
         </div>
     );
