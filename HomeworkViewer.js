@@ -1,48 +1,86 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import styles from './HomeworkCreator.module.css'; // Import the CSS module
+import { useParams, useNavigate } from 'react-router-dom';
+import styles from './HomeworkCreator.module.css'; // Make sure the path is correct
 
 function HomeworkViewer() {
-  const { id } = useParams();
-  const [homework, setHomework] = useState(null);
-  const [file, setFile] = useState(null);
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [homework, setHomework] = useState(null);
+    const [file, setFile] = useState(null);
+    const [gradeInfo, setGradeInfo] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    // Simulate fetching homework data
-    setHomework({ id, title: `${id.split('-')[0]} Homework`, description: 'Complete all problems.' });
-  }, [id]);
+    useEffect(() => {
+        // Fetching homework details based on the assignment id
+        const generateAssignments = (subject, total) => {
+            let assignments = {};
+            for (let i = 1; i <= total; i++) {
+                assignments[`${subject}-${i}`] = {
+                    title: `${subject.charAt(0).toUpperCase() + subject.slice(1)} Homework ${i}`,
+                    description: `Complete the set tasks for ${subject} number ${i}.`
+                };
+            }
+            return assignments;
+        };
 
-  const handleFileUpload = (e) => {
-    setFile(e.target.files[0]);
-  };
+        const subjects = ['math', 'science', 'history', 'english', 'geography'];
+        let allAssignments = {};
+        subjects.forEach(subject => {
+            Object.assign(allAssignments, generateAssignments(subject, 10));
+        });
 
-  const submitHomework = () => {
-    // Simulated grading system
-    const grades = ['A', 'B', 'C', 'D'];
-    const assignmentNumber = parseInt(id.split('-')[1]);
-    const gradeIndex = (assignmentNumber - 1) % grades.length;
-    const grade = grades[gradeIndex];
-    const comments = {
-      'A': 'Excellent work!',
-      'B': 'Good, but check your calculations.',
-      'C': 'Adequate, but needs improvement.',
-      'D': 'Insufficient, please revisit the material.'
+        if (allAssignments[id]) {
+            setHomework(allAssignments[id]);
+        } else {
+            setHomework({ title: "No Homework Found", description: "No details available for this assignment." });
+        }
+    }, [id]);
+
+    const handleFileUpload = (e) => {
+        setFile(e.target.files[0]);
+        setGradeInfo(null);
+        setShowModal(false);
     };
 
-    alert(`Grade: ${grade}, Comment: ${comments[grade]}`);
-  };
+    const submitHomework = () => {
+        if (!file) {
+            setShowModal(true);
+            setGradeInfo("Please upload a file before submitting!");
+            return;
+        }
+        const grades = ['A', 'B', 'C', 'D'];
+        const assignmentNumber = parseInt(id.split('-')[1], 10);
+        const gradeIndex = assignmentNumber % grades.length;
+        const grade = grades[gradeIndex];
+        const comments = {
+            'A': 'Excellent work!',
+            'B': 'Good, but check your calculations.',
+            'C': 'Adequate, but needs improvement.',
+            'D': 'Insufficient, please revisit the material.'
+        };
+        setGradeInfo(`Grade: ${grade}, Comment: ${comments[grade]}`);
+        setShowModal(true);
+    };
 
-  if (!homework) return <div className={styles.loading}>Loading...</div>;
+    const closeModal = () => {
+        setShowModal(false);
+    };
 
-  return (
-    <div className={styles.homeworkViewerContainer}>
-      <h1 className={styles.homeworkTitle}>{homework.title}</h1>
-      <p className={styles.homeworkDescription}>{homework.description}</p>
-      <input type="file" onChange={handleFileUpload} className={styles.fileInput} />
-      {file && <p className={styles.fileDetails}>File uploaded: {file.name}</p>}
-      <button onClick={submitHomework} className={styles.submitButton}>Submit Homework</button>
-    </div>
-  );
+    return (
+        <div className={styles.container}>
+            <h1 className={styles.title}>{homework?.title}</h1>
+            <p>{homework?.description}</p>
+            <input type="file" onChange={handleFileUpload} className={styles.input} />
+            {file && <p className={styles.fileDetails}>File uploaded: {file.name}</p>}
+            <button onClick={submitHomework} className={styles.submitButton}>Submit Homework</button>
+            {showModal && (
+                <div className={styles.gradingSection}>
+                    <p>{gradeInfo}</p>
+                    <button onClick={closeModal} className={styles.button}>Close</button>
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default HomeworkViewer;
