@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css'; // Importing the CSS module
 
 function Login() {
-    const [user, setUser] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
+    const [user, setUser] = useState(''); // To store the username input
+    const [password, setPassword] = useState(''); // To store the password input
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+    const navigate = useNavigate(); // Hook to navigate to different routes
 
     // Predefined user credentials
     const validUsers = {
@@ -23,13 +23,19 @@ function Login() {
     };
 
     const handleLogin = () => {
-        console.log('Logging in with', user, password);
-        // Check if the user credentials are valid
+        // Validate if both username and password fields are not empty
+        if (!user || !password) {
+            alert('Please enter both username and password.');
+            return; // Stop the function if validation fails
+        }
+
+        // Check user credentials against predefined list
         if (validUsers[user] && validUsers[user] === password) {
+            console.log('Logging in with', user, password);
             localStorage.setItem('user', user); // Simulate a successful login and save user to local storage
             navigate('/homework-list'); // Navigate to another route on successful login
         } else {
-            alert('Invalid login'); // Alert invalid login
+            alert('Invalid username or password.'); // Alert if credentials are incorrect
         }
     };
 
